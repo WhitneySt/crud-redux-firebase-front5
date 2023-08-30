@@ -3,32 +3,24 @@ import "./loginByPhone.scss";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { auth } from "../../firebase/firebaseConfig";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const LoginByPhone = () => {
+  const navigate = useNavigate();
   const { register, handleSubmit } = useForm();
 
   //Función que genera el recaptcha
 
   const generateRecaptcha = () => {
-    window.recaptchaVerifier = new RecaptchaVerifier(auth,'recaptch-container', {
-      'size': 'invisible',
-      'callback': () => {},
-      //'appVerificationDisabledForTesting': true 
-    });
-    // try {
-    //   window.recaptchaVerifier = new RecaptchaVerifier(
-    //     "recaptch-container",
-    //     {
-    //       'size': 'invisible',
-    //       'callback': () => {
-    //       },
-    //     },
-    //     auth
-    //   );
-    //   window.recaptchaVerifier = new RecaptchaVerifier()
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    try {      
+      window.recaptchaVerifier = new RecaptchaVerifier(auth,'recaptch-container', {
+        'size': 'invisible',
+        'callback': () => {},
+      });
+    } catch (error) {
+      console.log(error);      
+    }
+
   };
 
   //Función que envía el código de verificación
@@ -44,9 +36,8 @@ const LoginByPhone = () => {
         );
       })
       .then(() => {
-        //navigate("/insertcode");
+        navigate("/insertcode");
       })
-
       .catch((error) => {
         console.log(error);
         Swal.fire(
@@ -59,9 +50,7 @@ const LoginByPhone = () => {
 
   const onSubmit = (data) => {
     // //genera el recaptcha
-    console.log(window.recaptchaVerifier);
     generateRecaptcha(data.phone);
-    console.log(window.recaptchaVerifier);
     const appVerifier = window.recaptchaVerifier;
     sendSms(data.phone, appVerifier);
   };
