@@ -4,9 +4,12 @@ import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { auth } from "../../firebase/firebaseConfig";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { login } from "../../redux/authActions";
 
 const LoginByPhone = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
 
   //Función que genera el recaptcha
@@ -54,6 +57,10 @@ const LoginByPhone = () => {
     const appVerifier = window.recaptchaVerifier;
     sendSms(data.phone, appVerifier);
   };
+
+  const loginWithGoogle = () => { 
+    dispatch(login());
+  };
   return (
     <main className="loginByPhone">
       <h1>Inicio de sesión por número celular</h1>
@@ -70,6 +77,7 @@ const LoginByPhone = () => {
         </button>
       </form>
       <div id="recaptch-container"></div>
+      <button type="button" onClick={loginWithGoogle}>Iniciar sesión con Google</button>
     </main>
   );
 };

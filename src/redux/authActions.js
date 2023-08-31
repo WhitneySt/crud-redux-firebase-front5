@@ -5,6 +5,7 @@ import {
     GoogleAuthProvider,
     signInWithPopup,
 } from 'firebase/auth';
+import loginFromFirestore from "../service/loginFromCollection"; 
 
 
 //Crear accion que nos va a permitir iniciar sesión con el código de verificación
@@ -42,11 +43,39 @@ export const login = () => {
         try {
             const userCredential = await signInWithPopup(auth, provider);
             console.log("respuesta de google", userCredential);
-            dispatch(setUserLogged(userCredential));
-            dispatch(setIsLogged(true));
+            const { user } = userCredential;
+            const {user: userLogged, error} = await loginFromFirestore(user);
+            // let userLogged = await getUserFromCollection(userCredential.user.uid);
+            // if (!userLogged) {
+            //     const id = userCredential.user.uid;
+            //     const newUser = {
+            //         displayName: user.displayName,
+            //         photoURL: user.photoURL,
+            //         accessToken: user.accessToken
+            //     };
+            //     await createAnUserInCollection(id, newUser);
+            //     userLogged = {
+            //         id,
+            //         ...newUser
+            //     }
+            // } 
+            if (userLogged) {
+                
+                dispatch(setUserLogged(userLogged));
+                dispatch(setIsLogged(true));
+            } else {
+                dispatch(setError({
+                    error: true,
+                    ...error
+                }))
+            }
         } catch (error) {
             console.log("error", error.error);
-            dispatch(setIsLogged(false));
+            dispatch(setError({
+                error: true,
+                code: error.code,
+                message: error.message
+            }))
         }
     };
 };
