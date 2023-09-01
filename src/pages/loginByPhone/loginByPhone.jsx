@@ -5,12 +5,19 @@ import { auth } from "../../firebase/firebaseConfig";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { login } from "../../redux/authActions";
+import { login } from "../../redux/store/auth/authActions";
+import { useEffect } from "react";
+import { searchDoc } from "../../service/getUser";
 
 const LoginByPhone = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
+
+  useEffect(() => {
+    const params = {collectionName: "test", fieldName: "nombre", searchTerm: "whit"}
+    searchDoc(params);
+  },[])
 
   //Función que genera el recaptcha
 
@@ -78,6 +85,7 @@ const LoginByPhone = () => {
       </form>
       <div id="recaptch-container"></div>
       <button type="button" onClick={loginWithGoogle}>Iniciar sesión con Google</button>
+      <button type="button" onClick={()=>navigate('/login')}>Iniciar sesión con email y contraseña</button>
     </main>
   );
 };

@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { loginWithCode } from "../../redux/authActions";
+import { loginWithCode } from "../../redux/store/auth/authActions";
 
 const InsertCode = () => {
     const dispatch = useDispatch();
