@@ -127,7 +127,7 @@ export const loginWithEmailAndPassword = (loggedUser) => {
     return async(dispatch) => {
         try {
             const { user } = await signInWithEmailAndPassword(auth, loggedUser.email, loggedUser.password)
-            const foundUser = await getUserFromCollection(user.uid)
+            const foundUser = await getUserFromCollection(user.uid);
             console.log("respuesta firebase", user);
             console.log("respuesta firestore", foundUser);
             dispatch(setUserLogged(foundUser));
@@ -139,6 +139,25 @@ export const loginWithEmailAndPassword = (loggedUser) => {
                 error: true,
                 code: error.code,
                 message: error.message
+            }))
+        }
+    }
+}
+
+export const getUserActionFromCollection = (uid) => {
+    return async (dispatch) => {
+        try {
+            const userLogged = await getUserFromCollection(uid);
+            console.log(userLogged);
+            dispatch(setUserLogged(userLogged));
+            dispatch(setIsLogged(true));
+            dispatch(setError(false));
+        } catch (error) {
+            console.log(error);
+            dispatch(setError({
+                error: true,
+                code: error.code,
+                message: error.message            
             }))
         }
     }
