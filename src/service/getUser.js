@@ -52,13 +52,17 @@ export const searchDoc = async ({ collectionName, fieldName, searchTerm }) => {
 
     const collectionRef = collection(fireStore, collectionName);
     const q = query(collectionRef, where(fieldName, ">=", searchTerm), where(fieldName, "<=", searchTerm + '\uf8ff'), orderBy(fieldName));    
+    const result = []
     try {
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
-            console.log(doc.id, " => ", doc.data());
+            result.push({
+                id: doc.id,
+                ...doc.data()
+            })
         });
-        return true;
+        return result;
     } catch (error) {
         console.log(error);
         return null;

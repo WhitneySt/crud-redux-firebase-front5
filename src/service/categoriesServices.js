@@ -10,7 +10,6 @@ export const getCategoriesFromCollection = async () => {
         const querySnapshot = await getDocs(collectionRef);
         querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
-            console.log(doc.id, " => ", doc.data());
             categories.push({
                 id: doc.id,
                 ...doc.data()
